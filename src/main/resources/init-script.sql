@@ -14,6 +14,9 @@ CREATE TABLE coupon (
     exp_date VARCHAR(100)
 );
 
+INSERT INTO coupon (id, code, discount, exp_date)
+VALUES (1, '50SALE', 50.0, '2025-12-20');
+
 CREATE TABLE user (
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	first_name VARCHAR(20),
