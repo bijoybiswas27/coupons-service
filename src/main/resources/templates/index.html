@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Coupon Home</title>
+</head>
+<body>
+<a href="/showCreateCoupon">Create Coupon</a><br/>
+<a href="/showGetCoupon">Get Coupon</a>
+<a href="/logout">Logout</a>
+
+<form name="logoutForm" th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out"/>
+</form>
+</body>
+</html>

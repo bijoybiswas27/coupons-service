@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Coupon Details</title>
+</head>
+<body>
+<h2>Coupon Details</h2>
+<div th:if="${message != null and !#strings.isEmpty(message)}">
+    Message:<b th:text="${message}"></b><br/>
+</div>
+<div th:if="${coupon!=null} and ${coupon!=''}">
+    Code:<b th:text="${coupon.code}"></b><br/>
+    Discount:<b th:text="${coupon.discount}"></b><br/>
+    Expiry Date:<b th:text="${coupon.expDate}"></b><br/>
+</div>
+</body>
+</html>
