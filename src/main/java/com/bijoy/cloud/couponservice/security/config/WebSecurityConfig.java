@@ -15,6 +15,8 @@ import org.springframework.security.web.context.DelegatingSecurityContextReposit
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 public class WebSecurityConfig {
@@ -59,7 +61,13 @@ public class WebSecurityConfig {
                         .requestMatchers("/", "/login", "/showReg", "/registerUser")
                         .permitAll());
         http.logout(logout -> logout.logoutSuccessUrl("/"));
-        http.csrf(csrf -> csrf.disable());
+//        http.csrf(csrf -> csrf.disable());
+        //enabling csrf
+        http.csrf(csrf -> {
+            csrf.ignoringRequestMatchers("/getCoupon");
+            RequestMatcher requestMatchers = new RegexRequestMatcher("/registerUser", "POST");
+            csrf.ignoringRequestMatchers(requestMatchers);
+        });
         http.securityContext(securityContext -> securityContext.requireExplicitSave(true));
         return http.build();
     }
