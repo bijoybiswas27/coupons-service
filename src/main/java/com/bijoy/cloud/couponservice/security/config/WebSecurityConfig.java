@@ -88,7 +88,7 @@ public class WebSecurityConfig {
                 corsConfiguration.setAllowedOrigins(List.of(couponsUIDomain));
                 corsConfiguration.setAllowedMethods(List.of(couponsUIMethod
                         .replace(" ", "").split(",")));
-                corsConfiguration.setAllowedHeaders(List.of("couponsUIHeader"));
+                corsConfiguration.setAllowedHeaders(List.of(couponsUIHeader));
                 return corsConfiguration;
             };
             corsCustomizer.configurationSource(configurationSource);
