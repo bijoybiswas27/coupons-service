@@ -12,13 +12,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.math.BigDecimal;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -63,6 +65,38 @@ class CouponserviceApplicationTests {
                 .andExpect(jsonPath("$.discount").value(BigDecimal.valueOf(120.0)))
                 .andReturn();
         createdCoupon = mvcResult.getResponse().getContentAsString();
+    }
+
+    @Test
+    void testLogin_withoutCSRFToken_forbidden() throws Exception {
+        mvc.perform(post("/login")
+                        .formField("email", "bijoy@email.com")
+                        .formField("password", "bijoy"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testLogin_withCSRFToken_returnModelAndView() throws Exception {
+        ModelAndView mav = mvc.perform(post("/login")
+                        .formField("email", "sanskruti@email.com")
+                        .formField("password", "sanskruti")
+                        .with(csrf().asHeader()))
+                .andReturn().getModelAndView();
+
+        assertTrue(mav.hasView());
+        assertTrue(mav.getViewName().equals("index"));
+    }
+
+    @Test
+    void testCORS() throws Exception {
+        mvc.perform(options("/couponapi/coupons")
+                        .header("Access-Control-Request-Method", "POST")
+                        .header("Origin", "http://localhost:5051"))
+                .andExpect(status().isOk())
+                .andExpect(header().exists("Access-Control-Allow-Origin"))
+                .andExpect(header().string("Access-Control-Allow-Origin", "http://localhost:5051"))
+                .andExpect(header().exists("Access-Control-Allow-Methods"))
+                .andExpect(header().string("Access-Control-Allow-Methods", containsString("POST")));
     }
 
     @AfterAll
